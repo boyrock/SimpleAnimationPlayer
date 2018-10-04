@@ -5,7 +5,7 @@
 
 ![image](https://github.com/boyrock/SimpleAnimationPlayer/blob/master/Screenshot/s01.png)
 
-2. created animator and prefab file after finished import
+2. created animator and prefab file after finished fbx file import
 
 ![image](https://github.com/boyrock/SimpleAnimationPlayer/blob/master/Screenshot/s02.png)
 
