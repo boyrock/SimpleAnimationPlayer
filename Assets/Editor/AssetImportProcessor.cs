@@ -14,10 +14,10 @@ public class AssetImportProcessor : AssetPostprocessor
     {
         ModelImporter modelImporter = assetImporter as ModelImporter;
 
-        if(modelImporter.animationType == ModelImporterAnimationType.Legacy)
+        if (modelImporter.animationType == ModelImporterAnimationType.Legacy)
             modelImporter.animationType = ModelImporterAnimationType.Generic;
 
-        ModelImporterClipAnimation[] clipAnimations = modelImporter.defaultClipAnimations;
+        ModelImporterClipAnimation[] clipAnimations = modelImporter.clipAnimations;
 
         foreach (ModelImporterClipAnimation clip in clipAnimations)
         {
@@ -33,6 +33,9 @@ public class AssetImportProcessor : AssetPostprocessor
         for (int i = 0; i < importedAssets.Length; i++)
         {
             var importAssetPath = importedAssets[i];
+
+            if (importAssetPath.ToLower().Contains("fbx/avatar") == false && importAssetPath.ToLower().Contains("fbx/animations/props") == false)
+                continue;
 
             if (importAssetPath.ToLower().Contains(".fbx") == false)
                 continue;
@@ -103,6 +106,7 @@ public class AssetImportProcessor : AssetPostprocessor
         AnimatorController controller;
 
         Animator animator = prefab.GetComponent<Animator>();
+
         if (animator == null)
         {
             animator = prefab.gameObject.AddComponent<Animator>();

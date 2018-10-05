@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 [RequireComponent(typeof(AnimationController))]
 public class AnimationPlayer : MonoBehaviour {
@@ -17,7 +18,9 @@ public class AnimationPlayer : MonoBehaviour {
         var controller = GetComponent<AnimationController>();
 
         if(playOnStart == true)
-            controller.Play(playlist, false, isRepeatPlay);
+        {
+            controller.Play(playlist.Where(p => p.isEnable == true).ToList(), false, isRepeatPlay);
+        }
     }
 	
 	// Update is called once per frame

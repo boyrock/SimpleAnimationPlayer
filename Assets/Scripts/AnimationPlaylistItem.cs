@@ -10,6 +10,8 @@ public class AnimationPlaylistItem
     public string name;
     public int loopCount;
     public Action finishCallback;
+    public bool isEnable;
+
     public int hashName
     {
         get
@@ -23,6 +25,7 @@ public class AnimationPlaylistItem
         this.name = name;
         this.loopCount = 1;
         this.finishCallback = finishCallback;
+        this.isEnable = true;
     }
 
     public AnimationPlaylistItem(string name, int loopCount, Action callBack = null)
@@ -30,5 +33,6 @@ public class AnimationPlaylistItem
         this.name = name;
         this.loopCount = loopCount;
         this.finishCallback = callBack;
+        this.isEnable = true;
     }
 }
