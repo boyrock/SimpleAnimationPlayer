@@ -25,11 +25,39 @@ public class AnimatorStateImporterWindow : EditorWindow
     static void CreateController()
     {
         var window = GetWindow<AnimatorStateImporterWindow>("Animator State Importer");
-        
     }
-    
+
+    string successTime;
+
+    bool _importResult;
+    bool importResult
+    {
+        get
+        {
+            return _importResult;
+        }
+        set
+        {
+            if(value == true)
+            {
+                successTime = string.Format("({0})", System.DateTime.Now.ToString());
+            }
+            else
+            {
+                successTime = "";
+            }
+
+            _importResult = value;
+        }
+    }
+
+    GUIStyle style;
+
     private void OnGUI()
     {
+        if(style == null)
+            style = new GUIStyle();
+
         if(stateImporter == null)
             stateImporter = new AnimatorStateImporter();
 
@@ -74,9 +102,23 @@ public class AnimatorStateImporterWindow : EditorWindow
 
             if (GUILayout.Button("Import", GUILayout.Width(100)))
             {
-                stateImporter.Import();
+                importResult = stateImporter.Import();
                 stateImporter.Alignment();
             }
+
+            style.fontStyle = FontStyle.Bold;
+            style.normal.textColor = Color.white;
+            style.fontSize = 30;
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginHorizontal();
+            GUILayout.FlexibleSpace();
+            GUILayout.BeginVertical();
+            GUILayout.Label(importResult == true ? "SUCCESS..!!" : "", style);
+            GUILayout.Label(successTime);
+            GUILayout.EndVertical();
+            GUILayout.FlexibleSpace();
+            GUILayout.EndHorizontal();
+            GUILayout.FlexibleSpace();
         }
     }
 }

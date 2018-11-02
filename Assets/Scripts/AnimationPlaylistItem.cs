@@ -35,4 +35,12 @@ public class AnimationPlaylistItem
         this.finishCallback = callBack;
         this.isEnable = true;
     }
+
+    public void CopyTo(AnimationPlaylistItem state)
+    {
+        state.name = this.name;
+        state.loopCount = this.loopCount;
+        state.finishCallback = this.finishCallback;
+        state.isEnable = this.isEnable;
+    }
 }

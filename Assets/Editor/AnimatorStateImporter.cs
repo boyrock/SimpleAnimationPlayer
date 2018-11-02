@@ -18,6 +18,9 @@ public class AnimatorStateImporter : Editor {
 
     public void Alignment()
     {
+        if (rootStateMachine == null)
+            return;
+
         float yOffset = 200;
         var childStates = rootStateMachine.states;
 
@@ -35,10 +38,13 @@ public class AnimatorStateImporter : Editor {
         rootStateMachine.states = childStates;
     }
 
-    public void Import()
+    public bool Import()
     {
         if (controller == null)
-            return;
+            return false;
+
+        if (directory == null && fbxFiles.Length == 0)
+            return false;
 
         rootStateMachine = controller.layers[0].stateMachine;
         states = rootStateMachine.states;
@@ -86,6 +92,10 @@ public class AnimatorStateImporter : Editor {
         {
             directories = new List<string>();
             string selectionPath = AssetDatabase.GetAssetPath(directory);
+
+            //if (string.IsNullOrEmpty(selectionPath))
+            //    return false;
+
             directories.Add(selectionPath);
 
             var guids = AssetDatabase.FindAssets("t:Model", directories.ToArray());
@@ -95,6 +105,7 @@ public class AnimatorStateImporter : Editor {
                 string assetPath = AssetDatabase.GUIDToAssetPath(guid);
                 InsertFbxAnimationClips(assetPath);
             }
+            return true;
         }
 
         if (fbxFiles != null)
@@ -105,7 +116,10 @@ public class AnimatorStateImporter : Editor {
                 var assetPath = AssetDatabase.GetAssetPath(fbx);
                 InsertFbxAnimationClips(assetPath);
             }
+            return true;
         }
+
+        return false;
     }
 
     AnimatorState FindReadyState()

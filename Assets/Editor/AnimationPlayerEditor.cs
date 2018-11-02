@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEditorInternal;
@@ -8,6 +9,25 @@ using UnityEngine;
 public class AnimationPlayerEditor : Editor {
 
     private ReorderableList list;
+
+    private bool _isAllCheck;
+    private bool isAllCheck
+    {
+        get
+        {
+            return _isAllCheck;
+        }
+        set
+        {
+            if(_isAllCheck != value)
+            {
+                SetIsEnable(value);
+            }
+
+            _isAllCheck = value;
+        }
+    }
+
 
     private void OnEnable()
     {
@@ -41,7 +61,8 @@ public class AnimationPlayerEditor : Editor {
             {
                 EditorGUI.LabelField(new Rect(rect.x + 40, rect.y, 100, EditorGUIUtility.singleLineHeight), "animation name");
                 EditorGUI.LabelField(new Rect(rect.x + 250, rect.y, 30, EditorGUIUtility.singleLineHeight), "loop count");
-                EditorGUI.LabelField(new Rect(rect.x + 300, rect.y, 60, EditorGUIUtility.singleLineHeight), "isEnable");
+                //EditorGUI.LabelField(new Rect(rect.x + 300, rect.y, 60, EditorGUIUtility.singleLineHeight), "isEnable");
+                isAllCheck = EditorGUI.ToggleLeft(new Rect(rect.x + 300, rect.y, 150, EditorGUIUtility.singleLineHeight), "isEnaled", isAllCheck);
             };
         }
     }
@@ -66,6 +87,15 @@ public class AnimationPlayerEditor : Editor {
         return list;
     }
 
+    private void SetIsEnable(bool value)
+    {
+        AnimationPlayer ap = target as AnimationPlayer;
+        for (int i = 0; i < ap.playlist.Count; i++)
+        {
+            ap.playlist[i].isEnable = value;
+        }
+    }
+
     public override void OnInspectorGUI()
     {
         AnimationPlayer ap = target as AnimationPlayer;
@@ -82,18 +112,32 @@ public class AnimationPlayerEditor : Editor {
         List<AnimationPlaylistItem> appendItems = new List<AnimationPlaylistItem>();
         if (GUILayout.Button("Update Animation Playlist"))
         {
+            // delete files
+
             var animatorStates = GetAnimatorStateList(ap.GetComponent<Animator>());
+
+            AnimationPlaylistItem[] copied = new AnimationPlaylistItem[ap.playlist.Count];
+
+            ap.playlist.CopyTo(copied);
+
+            ap.playlist.Clear();
+
             for (int i = 0; i < animatorStates.Count; i++)
             {
-                for (int j = 0; j < ap.playlist.Count; j++)
-                {
-                    var state = animatorStates[i];
-                    if (state.name.Equals(ap.playlist[j].name))
-                        break;
 
-                    if (j == ap.playlist.Count - 1)
-                        appendItems.Add(animatorStates[i]);
+                var state = animatorStates[i];
+
+                for (int j = 0; j < copied.Length; j++)
+                {
+                    //var state = animatorStates[i];
+                    if (state.name.Equals(copied[j].name))
+                    {
+                        copied[j].CopyTo(state);
+                        break;
+                    }
                 }
+
+                appendItems.Add(state);
             }
         }
 

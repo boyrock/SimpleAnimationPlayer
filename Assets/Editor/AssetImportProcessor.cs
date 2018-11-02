@@ -13,16 +13,27 @@ public class AssetImportProcessor : AssetPostprocessor
     void OnPreprocessModel()
     {
         ModelImporter modelImporter = assetImporter as ModelImporter;
+        modelImporter.materialLocation = ModelImporterMaterialLocation.External;
+    }
 
+    void OnPreprocessAnimation()
+    {
+        ModelImporter modelImporter = assetImporter as ModelImporter;
         if (modelImporter.animationType == ModelImporterAnimationType.Legacy)
             modelImporter.animationType = ModelImporterAnimationType.Generic;
 
+        modelImporter.animationCompression = ModelImporterAnimationCompression.Off;
+
         ModelImporterClipAnimation[] clipAnimations = modelImporter.clipAnimations;
+
+        if (clipAnimations.Length == 0) clipAnimations = modelImporter.defaultClipAnimations;
 
         foreach (ModelImporterClipAnimation clip in clipAnimations)
         {
             if (clip.name.Contains("_loop"))
+            {
                 clip.loopTime = true;
+            }
         }
 
         modelImporter.clipAnimations = clipAnimations;
